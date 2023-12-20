@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'home/home_screen.dart';
 
-void main() {
+void main() async{
+var userModel = await HomeScreen.getApiData();
+
+
   runApp(MyApp());
 }
 
