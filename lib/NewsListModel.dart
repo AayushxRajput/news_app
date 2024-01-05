@@ -1,11 +1,11 @@
-class GetSimpleApi {
+class NewsListModel {
   String? status;
   int? totalResults;
   List<Articles>? articles;
 
-  GetSimpleApi({this.status, this.totalResults, this.articles});
+  NewsListModel({this.status, this.totalResults, this.articles});
 
-  GetSimpleApi.fromJson(Map<String, dynamic> json) {
+  NewsListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     totalResults = json['totalResults'];
     if (json['articles'] != null) {

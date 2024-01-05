@@ -1,40 +1,70 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../GetSimpleApi.dart';
+import '../NewsListModel.dart';
+import '../widget/news_container.dart';
 
 class HomeScreen extends StatefulWidget {
-  // final List _posts = [
-  //   'post 1',
-  // ];
-
   const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
-  static getApiData() {}
-
-  // static void getApiData() {}
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  NewsListModel newsListModel = NewsListModel();
 
-  late List<GetSimpleApi> apiList;
+  Future<NewsListModel> getApiData() async {
+    String url =
+        "https://newsapi.org/v2/top-headlines?country=us&apiKey=cd7cf0dec5214fe9be27870754ae2076";
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getApiData();
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        return NewsListModel.fromJson(data);
+      } else {
+        // Error case ko handle karein, aap yahaan exception throw kar sakte hain ya phir error ko log bhi kar sakte hain.
+        print(
+            "Data fetch karne mein kuch gadbad. Status code: ${response.statusCode}");
+        return NewsListModel(); // Aap yahaan null bhi return kar sakte hain ya phir exception throw bhi kar sakte hain.
+      }
+    } catch (error) {
+      // API call ya JSON parsing ke dauran aane wale exceptions ko handle karein.
+      print("API call mein error: $error");
+      return NewsListModel(); // Aap yahaan null bhi return kar sakte hain ya phir exception throw bhi kar sakte hain.
+    }
+  }
+
+  Future<void> setData() async {
+    newsListModel = await getApiData();
+
+    print(newsListModel.articles?[0].title ??
+        "Ye hai default value agar value null hai to");
   }
 
   @override
+  void initState() {
+    setData();
+    super.initState();
+  }
+
+  /*
+
+  [
+    0: "Article",
+    1: "Article",
+    2: "Article",
+    3: "Article",
+    4: "Article",
+    5: "Article"
+  ]
+
+   */
+
+  @override
   Widget build(BuildContext context) {
-    var arrNews = [
-
-    ];
-
     return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -42,62 +72,22 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
           ),
         ),
-        body: ListView.builder(
-          itemBuilder: (context, index) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Local Asset Image
-                  Image.asset(
-                    'images/modi_ji.jpg', // Replace with the actual path to your local image asset
-                    width: 335,
-                    fit: BoxFit.cover,
-                  ),
-
-                  // News Title
-                  const Padding(
-                    padding: EdgeInsets.all(9.5),
-                    child: Text(
-                      "Prime Minister Narendra Modi launches Viksit Bharat@2047: Voice of Youth",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w500),
-                    ),
-                  ),
-
-                  // News Description
-                  const Padding(
-                    padding: EdgeInsets.all(9.5),
-                    child: Text(
-                      "Modi Ji, yaani ki Narendra Modi, Bharat ke vartaman Pradhan Mantri hain."
-                          " Unhone Bharatiya Janata Party (BJP) ke pramukh netritva mein 2014 mein"
-                          " Pradhan Mantri pad ki shapath li thi aur phir 2019 mein bhi dobara is"
-                          " pad par chune gaye the. Modi Ji ne apne karyakal mein kai mahatva purna"
-                          " kadam uthaye hain, aur unke netritva mein kuch mukhya initiatives hain: ",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w500),
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-          itemCount: arrNews.length,
-        )
+        body:
+            PageView.builder(
+              scrollDirection: Axis.vertical,  // ye page ko horizontal & vertical kar sak te he
+                itemCount: 10, itemBuilder:
+                (context, index) {
+                 return NewsContainer(
+                     imgUrl: "https://media.istockphoto.com/id/1859663342/photo/tree-in-green-wheat-field.webp?s=2048x2048&w=is&k=20&c=Ls6Ljgz-nPF35IeKN0x7957INDKYIpxnS948bQlBdBU=",
+                     newsTitle: "5G in India",
+                     newsDescription: "India's 5G user base has more than tripled from last "
+                         "year—and is expected to by 2029, according to the Ericsson Mobility "
+                         "Report 2023 published Thursday. Last year, Ericsson pegged India's 5G"
+                         " subscriber base at 31 million users, rising by over 4x in 2023 itself",
+                     newsUrl: "https://www.indiatoday.in/technology/news/story/redmi-note-13-5g-india-price-complete-specifications-have-leaked-just-days-ahead-of-its-launch-2482776-2024-01-01"
+                 );
+                }
+           )
     );
-  }
- Future<GetSimpleApi?> getApiData() async{
-    String url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=cd7cf0dec5214fe9be27870754ae2076";
-
-    final response = await http.get(Uri.parse(url));
-
-    if(response.statusCode == 200){
-   var data =jsonDecode(response.body);
-  return GetSimpleApi.fromJson(response.body as Map<String, dynamic>);
-
-    }
-    else{
-      return null;
-    }
   }
 }
