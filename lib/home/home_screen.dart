@@ -12,11 +12,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  NewsListModel newsListModel = NewsListModel();
+  NewsListModel? newsListModel;
 
   Future<NewsListModel> getApiData() async {
     String url =
-        "https://newsapi.org/v2/top-headlines?country=us&apiKey=cd7cf0dec5214fe9be27870754ae2076";
+        "https://newsapi.org/v2/top-headlines?country=in&apiKey=cd7cf0dec5214fe9be27870754ae2076";
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -38,10 +38,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> setData() async {
-    newsListModel = await getApiData();
 
-    print(newsListModel.articles?[0].title ??
-        "Ye hai default value agar value null hai to");
+    await getApiData().then((value) {
+      setState(() {
+        newsListModel = value;
+      });
+    });
+
+    print(newsListModel?.articles?[0].title ?? "Ye hai default value agar value null hai to");
   }
 
   @override
@@ -50,18 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-  /*
-
-  [
-    0: "Article",
-    1: "Article",
-    2: "Article",
-    3: "Article",
-    4: "Article",
-    5: "Article"
-  ]
-
-   */
 
   @override
   Widget build(BuildContext context) {
@@ -72,19 +64,15 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
           ),
         ),
-        body:
-            PageView.builder(
+        body: newsListModel?.articles?.length == 0 ? Center(child: CircularProgressIndicator())
+            : PageView.builder(
               scrollDirection: Axis.vertical,  // ye page ko horizontal & vertical kar sak te he
-                itemCount: 10, itemBuilder:
-                (context, index) {
+                itemCount: newsListModel?.articles?.length ?? 0, itemBuilder: (context, index) {
                  return NewsContainer(
-                     imgUrl: "https://media.istockphoto.com/id/1859663342/photo/tree-in-green-wheat-field.webp?s=2048x2048&w=is&k=20&c=Ls6Ljgz-nPF35IeKN0x7957INDKYIpxnS948bQlBdBU=",
-                     newsTitle: "5G in India",
-                     newsDescription: "India's 5G user base has more than tripled from last "
-                         "year—and is expected to by 2029, according to the Ericsson Mobility "
-                         "Report 2023 published Thursday. Last year, Ericsson pegged India's 5G"
-                         " subscriber base at 31 million users, rising by over 4x in 2023 itself",
-                     newsUrl: "https://www.indiatoday.in/technology/news/story/redmi-note-13-5g-india-price-complete-specifications-have-leaked-just-days-ahead-of-its-launch-2482776-2024-01-01"
+                     imgUrl: newsListModel?.articles?[index].urlToImage.toString() ?? "",
+                     newsTitle: newsListModel?.articles?[index].title.toString() ?? "",
+                     newsDescription: newsListModel?.articles?[index].description.toString() ?? "",
+                     newsUrl: newsListModel?.articles?[index].url.toString() ?? "",
                  );
                 }
            )

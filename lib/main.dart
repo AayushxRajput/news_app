@@ -30,9 +30,8 @@ class _BlankScreenState extends State<BlankScreen> {
   // home page me 5 seconds bad me jane bala code
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) =>  HomeScreen()));
     });
@@ -50,12 +49,21 @@ class _BlankScreenState extends State<BlankScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'images/splash_pic.jpg',
-              fit: BoxFit.cover,
-              width: width * 1.0,
-              height: height * .5,
+
+            Card(
+              elevation:10,
+              margin: const EdgeInsets.fromLTRB(10, 0.0, 10, 16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Image.asset(
+                'images/splash_pic.jpg',
+                fit: BoxFit.cover,
+                width: width * 1.0,
+                height: height * .5,
+              ),
             ),
+
             const Text(
               'Top News MP',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class NewsContainer extends StatelessWidget {
+class NewsContainer extends StatefulWidget {
 
   String imgUrl;
   String newsTitle;
@@ -8,22 +8,26 @@ class NewsContainer extends StatelessWidget {
   String  newsUrl;
 
 
-   NewsContainer({super.key,
-     required this.imgUrl,
-     required this.newsTitle,
-     required this.newsDescription,
-     required this.newsUrl,
-   });
+  NewsContainer({super.key,
+    required this.imgUrl,
+    required this.newsTitle,
+    required this.newsDescription,
+    required this.newsUrl,
+  });
+
+  @override
+  State<NewsContainer> createState() => _NewsContainerState();
+}
+
+class _NewsContainerState extends State<NewsContainer> {
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
-
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
@@ -35,9 +39,11 @@ class NewsContainer extends StatelessWidget {
             ),
 
             child: Image.network(
-                height :400,
+                height: 400,
                 width: MediaQuery.of(context).size.width,
-                fit:BoxFit.cover,imgUrl),
+                fit: BoxFit.cover,
+                widget.imgUrl
+            ),
           ),
 
           Container(
@@ -47,11 +53,15 @@ class NewsContainer extends StatelessWidget {
               children: [
 
                 SizedBox(height: 10,),
-                Text(newsTitle,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                Text(widget.newsTitle,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
 
                 SizedBox(height: 10,),
-                Text(newsDescription,
-
+                Text(widget.newsDescription,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                   style: TextStyle( fontSize: 17),),
 
               ],
@@ -63,16 +73,20 @@ class NewsContainer extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(onPressed: (){
-                print("Going to $newsUrl");
-              },
-                  child:  Text("Read More")
 
+              ElevatedButton(
+                  onPressed: (){
+                    print("Going to ${widget.newsUrl}");
+                  },
+                  child:  Text("Read More")
               ),
+
             ],
           )
         ],
       ),
     );
   }
+
+
 }
