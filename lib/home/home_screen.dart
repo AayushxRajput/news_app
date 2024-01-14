@@ -26,12 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
         return NewsListModel.fromJson(data);
       } else {
         // Error case ko handle karein, aap yahaan exception throw kar sakte hain ya phir error ko log bhi kar sakte hain.
+
         print(
             "Data fetch karne mein kuch gadbad. Status code: ${response.statusCode}");
+
         return NewsListModel(); // Aap yahaan null bhi return kar sakte hain ya phir exception throw bhi kar sakte hain.
       }
-    } catch (error) {
+    }
+
+    catch (error) {
       // API call ya JSON parsing ke dauran aane wale exceptions ko handle karein.
+
       print("API call mein error: $error");
       return NewsListModel(); // Aap yahaan null bhi return kar sakte hain ya phir exception throw bhi kar sakte hain.
     }
@@ -42,8 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
     await getApiData().then((value) {
       setState(() {
         newsListModel = value;
-      });
-    });
+          }
+        );
+      }
+    );
 
     print(newsListModel?.articles?[0].title ?? "Ye hai default value agar value null hai to");
   }
@@ -59,15 +66,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.blue[200],
           title: const Text(
             'Breaking News',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
           ),
         ),
-        body: newsListModel?.articles?.length == 0 ? Center(child: CircularProgressIndicator())
+
+        body: newsListModel?.articles?.length == 0 ? const Center(child: CircularProgressIndicator())
             : PageView.builder(
               scrollDirection: Axis.vertical,  // ye page ko horizontal & vertical kar sak te he
                 itemCount: newsListModel?.articles?.length ?? 0, itemBuilder: (context, index) {
+
+
                  return NewsContainer(
                      imgUrl: newsListModel?.articles?[index].urlToImage.toString() ?? "",
                      newsTitle: newsListModel?.articles?[index].title.toString() ?? "",
@@ -76,6 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
                  );
                 }
            )
-    );
+     );
   }
 }

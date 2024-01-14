@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../home/detail_view.dart';
 
 class NewsContainer extends StatefulWidget {
 
   String imgUrl;
   String newsTitle;
   String newsDescription;
-  String  newsUrl;
+  String newsUrl;
 
 
   NewsContainer({super.key,
@@ -24,69 +25,81 @@ class _NewsContainerState extends State<NewsContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    return Scaffold(
 
-          Card(
-            elevation:10,
-            margin: EdgeInsets.fromLTRB(10, 0.0, 10, 16.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
 
-            child: Image.network(
-                height: 400,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.cover,
-                widget.imgUrl
-            ),
-          ),
-
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-
-                SizedBox(height: 10,),
-                Text(widget.newsTitle,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-
-                SizedBox(height: 10,),
-                Text(widget.newsDescription,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
-                  style: TextStyle( fontSize: 17),),
-
-              ],
-            ),
-          ),
-
-          Spacer(),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-
-              ElevatedButton(
-                  onPressed: (){
-                    print("Going to ${widget.newsUrl}");
-                  },
-                  child:  Text("Read More")
+            Card(
+              elevation:10,
+              margin: const EdgeInsets.fromLTRB(10, 0.0, 10, 16.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
 
-            ],
-          )
-        ],
+              child: Image.network(
+                  height: 400,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                  widget.imgUrl
+              ),
+            ),
+
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  const SizedBox(height: 10,),
+                  Text(widget.newsTitle,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+
+                  const SizedBox(height: 10,),
+                  Text(widget.newsDescription,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    style: const TextStyle( fontSize: 17),),
+
+                ],
+              ),
+            ),
+
+            const Spacer(),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+
+                SizedBox(
+                  child: ElevatedButton(
+                      onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> DetailViewScreen(
+                          newsUrl: widget.newsUrl,
+                          imgUrl: widget.imgUrl,
+                          newsTitle: widget.newsTitle,
+                          newsDescription: widget.newsDescription,
+                          )
+                         )
+                        );
+                      },
+                      child:  const Text("Read More")
+                  ),
+                ),
+
+              ],
+            )
+          ],
+        ),
       ),
+
+
     );
   }
-
-
 }
